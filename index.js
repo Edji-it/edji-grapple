@@ -55,7 +55,7 @@ app.get("/sign-s3", (req, res) => {
     Expires: 60,
     ContentType: "image/jpeg",
     // ContentType: fileType,
-    ACL: "public-read"
+    // ACL: "public-read"
   }
 
   console.log("requesting signed url")
