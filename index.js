@@ -65,7 +65,8 @@ app.get("/sign-s3", (req, res) => {
 
     let returnData = {
       signedRequest: data,
-      url: `//${S3_BUCKET}.s3-website-us-west-2.amazonaws.com/${fileName}`
+      // url: `//${S3_BUCKET}.s3-website-us-west-2.amazonaws.com/${fileName}`
+      url: `//${S3_BUCKET}/${fileName}`
     }
 
     res.status(200).send(returnData)
