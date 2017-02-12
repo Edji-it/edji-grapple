@@ -47,13 +47,13 @@ app.use(function (req, res, next) {
 app.get("/sign-s3", (req, res) => {
   console.log("got sign request!")
   const s3 = new aws.S3()
-  // const fileName = req.query['file-name']
-  // const fileType = req.query['file-type']
+  const fileName = req.query['file-name']
+  const fileType = req.query['file-type']
   const s3Params = {
     Bucket: "image-dev.edji.it",
-    Key: "test-file",
+    Key: fileName,
     Expires: 60,
-    ContentType: "image/jpeg",
+    ContentType: fileType,
     // ContentType: fileType,
     // ACL: "public-read"
   }
