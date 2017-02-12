@@ -1,5 +1,6 @@
 const express = require('express')
 const aws = require('aws-sdk')
+aws.config.update({region: 'us-west-2'}) // update the aws region we're referencing
 var bodyParser = require("body-parser")
 
 const app = express()
