@@ -46,20 +46,17 @@ app.use(function (req, res, next) {
 })
 
 app.get("/sign-s3", (req, res) => {
-  console.log("got sign request!")
   const s3 = new aws.S3()
-  const fileName = req.query['file-name']
+  const fileName = "readings/" + req.query['file-name']
   const fileType = req.query['file-type']
   const s3Params = {
-    Bucket: "image-dev.edji.it",
+    Bucket: S3_BUCKET,
     Key: fileName,
     Expires: 60,
     ContentType: fileType,
-    // ContentType: fileType,
     ACL: "public-read"
   }
 
-  console.log("requesting signed url")
   s3.getSignedUrl('putObject', s3Params, (err, data) => {
     if (err) {
       console.error(err)
@@ -79,5 +76,3 @@ app.get("/sign-s3", (req, res) => {
 app.listen(PORT, () => {
   console.log("Grapple listening on " + PORT)
 })
-
-// const S3_BUCKET = process.env.S3_BUCKET || "image.edji.it"
