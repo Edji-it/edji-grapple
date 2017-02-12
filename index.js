@@ -48,8 +48,8 @@ app.use(function (req, res, next) {
 
 app.get("/sign-s3", (req, res) => {
   const s3 = new aws.S3()
-  // const fileName = "readings/" + req.query['file-name']
-  const fileName = "readings/" + uuid.v4()
+  const fileExt = req.query['file-name'].substr(req.query['file-name'].lastIndexOf(".")).toLowerCase()
+  const fileName = "readings/" + uuid.v4() + fileExt
   const fileType = req.query['file-type']
   const s3Params = {
     Bucket: S3_BUCKET,
