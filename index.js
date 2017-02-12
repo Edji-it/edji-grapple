@@ -5,11 +5,13 @@ var bodyParser = require("body-parser")
 const app = express()
 
 const PORT = process.env.PORT || 3456
+const S3_BUCKET = process.env.S3_BUCKET || "image-dev.edji.it"
 
 app.use(bodyParser.json({limit: '5mb'}))
 
 app.get("/sign-s3", (req, res) => {
-  const s3 = new aws.s3()
+  console.log("got sign request!")
+  const s3 = new aws.S3()
   // const fileName = req.query['file-name']
   // const fileType = req.query['file-type']
   const s3Params = {
@@ -21,6 +23,7 @@ app.get("/sign-s3", (req, res) => {
     ACL: "public-read"
   }
 
+  console.log("requesting signed url")
   s3.getSignedUrl('putObject', s3Params, (err, data) => {
     if (err) {
       console.error(err)
@@ -41,4 +44,4 @@ app.listen(PORT, () => {
   console.log("Grapple listening on " + PORT)
 })
 
-const S3_BUCKET = process.env.S3_BUCKET || "image.edji.it"
+// const S3_BUCKET = process.env.S3_BUCKET || "image.edji.it"
