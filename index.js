@@ -1,4 +1,5 @@
 const express = require('express')
+const uuid = require('uuid')
 const aws = require('aws-sdk')
 aws.config.update({region: 'us-west-2'}) // update the aws region we're referencing
 var bodyParser = require("body-parser")
@@ -47,7 +48,8 @@ app.use(function (req, res, next) {
 
 app.get("/sign-s3", (req, res) => {
   const s3 = new aws.S3()
-  const fileName = "readings/" + req.query['file-name']
+  // const fileName = "readings/" + req.query['file-name']
+  const fileName = "readings/" + uuid.v4()
   const fileType = req.query['file-type']
   const s3Params = {
     Bucket: S3_BUCKET,
