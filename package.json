@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "S3_BUCKET=image-dev.edji.it node index.js"
+    "start": "node index.js"
   },
   "license": "MIT",
   "dependencies": {
