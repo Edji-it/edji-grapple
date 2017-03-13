@@ -8,7 +8,6 @@ const app = express()
 
 const PORT = process.env.PORT || 3456
 const S3_BUCKET = process.env.S3_BUCKET || "image-dev.edji.it"
-console.log(S3_BUCKET)
 
 app.use(bodyParser.json({limit: '5mb'}))
 
