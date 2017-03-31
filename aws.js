@@ -1,5 +1,5 @@
 const aws = require('aws-sdk')
-const S3_BUCKET = process.env.S3_BUCKET || "image-dev.edji.it"
+const S3_BUCKET = process.env.S3_BUCKET || "grapple-dev.edji.it"
 
 // update the aws region we're referencing
 aws.config.update({ region: 'us-west-2' })
