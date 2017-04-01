@@ -32,7 +32,10 @@ module.exports = {
         if (!filePaths) { let filePaths = [] } // this will be the returned array of AWS file paths
         let fileName = `${fileId}-${pageNum}.jpg`
         let resultPath = `${savePath}/${fileName}`
+        console.log("just about to convert a page")
         im.convert(['-density', '144', `${savePath}/${fileId}.pdf[${pageNum}]`, resultPath ], (err, stdout) => {
+            console.log("actually converted the thing!")
+
             // when an error occurs, we assume that's because we hit the end of the file, and so we resolve with the created paths
             if (err) {
                 fs.unlink(`${savePath}/${fileId}.pdf`, (err) => { /** do nothing */ }) // we'll just let this happen and move on with our lives

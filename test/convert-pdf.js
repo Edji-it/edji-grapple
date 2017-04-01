@@ -12,7 +12,7 @@ const fs = require('fs')
 
 describe("PDF upload", () => {
   it("should PUT a single-page pdf", (done) => {
-    fs.readFile('./test/pdf/lockheed-test.pdf', (err, data) => {
+    fs.readFile('./test/pdf/test.pdf', (err, data) => {
 
       if (err) { console.error(err) }
       else {
