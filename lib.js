@@ -6,24 +6,27 @@ let aws = require('./aws')
 module.exports = {
     savePdf: function(loc, buff) {
         return new Promise((resolve, reject) => {
+            console.log("beginning to save the pdf")
             fs.open(loc, 'wx', (err, fd) => {
-            if (err) { console.error(err) }
-            else {
-                // write the req.body (which is a buffer created by body-parser) to the opened file
-                fs.write(fd, buff, (err, written, buff) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        fs.exists(loc, (exists) => {
-                            if (exists) {
-                                resolve(written, buff)
-                            } else {
-                                reject("File was not created")
-                            }
-                        })
-                    }
-                })
-            }
+                if (err) { console.error(err) }
+                else {
+                    console.log("got the file reference")
+                    // write the req.body (which is a buffer created by body-parser) to the opened file
+                    fs.write(fd, buff, (err, written, buff) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            console.log("wrote the file!")
+                            fs.exists(loc, (exists) => {
+                                if (exists) {
+                                    resolve(written, buff)
+                                } else {
+                                    reject("File was not created")
+                                }
+                            })
+                        }
+                    })
+                }
             })
         })
     },

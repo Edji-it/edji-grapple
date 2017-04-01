@@ -90,11 +90,14 @@ app.put('/v1/pdf', (req, res) => {
     if (!contentType || contentType.toLowerCase() !== "application/pdf") {
         return res.status(400).send({ errors: { typeError: "Content-Type not set to application/pdf" } })
     }
+    console.log("it's a pdf")
 
     if (!req.body) {
         res.status(400).send()
         return
     }
+
+    console.log("we have the data")
 
     let fileId = uuid.v4()
     let savePath = "./content/output/" + fileId
@@ -108,6 +111,7 @@ app.put('/v1/pdf', (req, res) => {
     let files = []
 
     lib.putToS3(statusLocation, JSON.stringify(placeholder))
+        console.log("put to s3 finished")
         .then(() => {
             res.status(202).send({ uuid: fileId })
         })
