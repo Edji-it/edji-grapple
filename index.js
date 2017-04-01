@@ -140,6 +140,8 @@ app.put('/v1/pdf', (req, res) => {
                 updatedTime: Date.now()
             }
 
+            fs.rmdir(savePath)
+
             return lib.putToS3(statusLocation, JSON.stringify(statusUpdate))
         })
         .then((awsPath) => {
