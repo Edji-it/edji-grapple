@@ -89,7 +89,7 @@ module.exports = {
                 Body: data,
                 ACL: 'public-read'
             }, (err, res) => {
-                if (err) { throw err }
+                if (err) { reject(err) }
                 else { resolve(awsPath) }
             })
         })
