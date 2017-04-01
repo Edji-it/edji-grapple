@@ -23,7 +23,7 @@ describe("PDF upload", () => {
           .send(data)
           .end((err, res) => {
             console.log("got response")
-            // err && console.log(err)
+            err && console.log(err)
             res && console.log(res.body)
             res.should.have.status(202)
             res.body.should.not.have.property("errors")
