@@ -112,7 +112,6 @@ app.put('/v1/pdf', (req, res) => {
 
     lib.putToS3(statusLocation, JSON.stringify(placeholder))
         .then(() => {
-            console.log("put to s3 finished")
             res.status(202).send({ uuid: fileId })
         })
         .catch((err) => {

@@ -14,6 +14,7 @@ module.exports = {
                     // write the req.body (which is a buffer created by body-parser) to the opened file
                     fs.write(fd, buff, (err, written, buff) => {
                         if (err) {
+                            console.log("hit an error writing the file")
                             reject(err)
                         } else {
                             console.log("wrote the file!")
