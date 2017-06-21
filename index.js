@@ -86,10 +86,9 @@ app.get("/sign-s3", (req, res) => {
 app.delete("/v1/s3/obj", (req, res) => {
     const fileName = req.query['file-name']
 
-    aws.s3.getObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+    aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
         if (err) { return res.status(500).send(err) }
         else {
-            console.log("got that object!")
             res.status(200).send()
         }
     })
