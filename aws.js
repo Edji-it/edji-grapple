@@ -2,7 +2,7 @@ const aws = require('aws-sdk')
 const S3_BUCKET = process.env.S3_BUCKET || "image-dev.edji.it"
 
 // update the aws region we're referencing
-aws.config.update({ region: 'us-west-2' })
+aws.config.update({ region: 'us-west-2', apiVersions: { s3: '2006-03-01' }})
 
 // if we are not running in production, then we'll load the keys locally
 if (process.env.NODE_ENV !== "production") {
