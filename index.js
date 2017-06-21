@@ -83,6 +83,18 @@ app.get("/sign-s3", (req, res) => {
   })
 })
 
+app.delete("/v1/s3/obj", (req, res) => {
+    const fileName = req.query['file-name']
+
+    aws.s3.getObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+        if (err) { return res.status(500).send(err) }
+        else {
+            console.log("got that object!")
+            res.status(200).send()
+        }
+    })
+})
+
 app.put('/v1/pdf', (req, res) => {
   console.log("route got hit")
     // the process will crash if the server tries assuming application/json
