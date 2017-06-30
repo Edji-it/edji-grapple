@@ -96,20 +96,16 @@ app.delete("/v1/s3/obj", (req, res) => {
 })
 
 app.put('/v1/pdf', (req, res) => {
-  console.log("route got hit")
     // the process will crash if the server tries assuming application/json
     let contentType = req.headers['Content-Type'] || req.headers['content-type']
     if (!contentType || contentType.toLowerCase() !== "application/pdf") {
         return res.status(400).send({ errors: { typeError: "Content-Type not set to application/pdf" } })
     }
-    console.log("it's a pdf")
 
     if (!req.body) {
         res.status(400).send()
         return
     }
-
-    console.log("we have the data")
 
     let fileId = uuid.v4()
     let savePath = "./content/output/" + fileId
@@ -127,7 +123,7 @@ app.put('/v1/pdf', (req, res) => {
             res.status(202).send({ uuid: fileId })
         })
         .catch((err) => {
-            console.log(err)
+            console.error(err)
             res.status(500).send()
 
             let failedStatus = {
@@ -138,8 +134,6 @@ app.put('/v1/pdf', (req, res) => {
             }
             lib.putToS3(statusLocation, failedStatus)
         })
-
-    console.log("checking pdf")
 
     lib.savePdf(pdfPath, req.body)
         .then((written, buff) => {
