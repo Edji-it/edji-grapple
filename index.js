@@ -15,6 +15,7 @@ const app = express()
 
 const PORT = process.env.PORT || 3456
 const S3_BUCKET = process.env.S3_BUCKET || "image-dev.edji.it"
+const authDomain = config.get("EDJI_API.OPTIMUS_URL")
 
 app.use(bodyParser.json({limit: '5mb'}))
 app.use(bodyParser.raw({ limit: '10mb', type: 'application/pdf' }))
@@ -86,7 +87,7 @@ app.get("/sign-s3", (req, res) => {
 app.delete("/v1/s3/obj", (req, res) => {
     const fileName = req.query['file-name']
 
-    aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+    aws.s3.getObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
         if (err) { return res.status(500).send(err) }
         else {
             res.status(200).send()
