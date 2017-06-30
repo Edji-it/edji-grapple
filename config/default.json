@@ -3,6 +3,6 @@
       "url": "http://grapple-dev.edji.it"
   },
   "EDJI_API": {
-    "OPTIMUS_URL": "https://optimus-dev.edji.it"
+    "OPTIMUS_URL": "http://localhost:3354"
   }
 }

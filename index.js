@@ -7,6 +7,7 @@ const im = require('imagemagick')
 // aws.config.update({region: 'us-west-2'}) // update the aws region we're referencing
 const bodyParser = require("body-parser")
 const Q = require('q')
+const rp = require('request-promise')
 
 const lib = require('./lib')
 let aws = require('./aws')
@@ -84,15 +85,41 @@ app.get("/sign-s3", (req, res) => {
   })
 })
 
-app.delete("/v1/s3/obj", (req, res) => {
-    const fileName = req.query['file-name']
+// this route requests permissions from the optimus server to delete an object in s3. Optimus knows all, and will know if that is ok or not
+app.delete("/v1/s3/:type/:asset_id/:fileName", (req, res) => {
+    const type = req.params.type
+    const assetId = req.params.asset_id
+    const fileName = req.params.fileName
 
-    aws.s3.getObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
-        if (err) { return res.status(500).send(err) }
-        else {
-            res.status(200).send()
-        }
-    })
+    // console.log(req.headers)
+    // if (req.headers['Authorization']) {
+    //     console.log("it's capital")
+    // } else if (req.headers['uthorization'])
+
+    let options = {
+        method: 'DELETE',
+        uri: [authDomain, "users", "assets", type, assetId].join("/"), // optimus endpoint for getting permissions to delete an asset,
+        headers: { Authorization: req.headers['authorization'] }
+    }
+
+    rp(options)
+        .then((body) => {
+            // there actually shouldn't be a body from this call - it returns a 204
+            console.log(body)
+            res.status(204).send(body)
+        })
+        .catch((err) => {
+            // console.error(err)
+            console.log('there was an error here')
+            res.status(400).send({ error: err })
+        })
+
+    // aws.s3.getObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+    //     if (err) { return res.status(500).send(err) }
+    //     else {
+    //         res.status(200).send()
+    //     }
+    // })
 })
 
 app.put('/v1/pdf', (req, res) => {
