@@ -114,7 +114,6 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
 
     rp(options)
         .then((body) => { // { fileLocations: string[] }
-            console.log('Optimus has responded!', body)
             if (body.fileLocations) {
                 let promises = []
                 body.fileLocations.forEach((url) => {
@@ -136,8 +135,8 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
             }
         })
         .catch((err) => {
-            console.log('there was an error here')
-            res.status(err.statusCode).send({ error: err.error })
+            console.error(err)
+            res.status(err.statusCode).send()
         })
 })
 
