@@ -84,5 +84,7 @@ Route Parameters
 Response Body
 
 ```javascript
+{
   deleted_urls: string[]
+}
 ```
