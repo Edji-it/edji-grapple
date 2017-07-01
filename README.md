@@ -70,3 +70,13 @@ Response body
   url: string // this is the url of the s3 bucket which the file will be uploaded to
 }
 ```
+
+### DELETE /v1/s3/:type/:asset_id
+
+This call is used to delete assets from s3. It requests access from Optimus to delete an object, and uppon receiving access it submits the delete request(s) to s3.
+
+Route Parameters
+
+`type`: `string` -> The name of the asset type you want deleted. Currently accepted are audio, images and documents
+
+`asset_id`: `string` -> The id of the asset that Optimus needs to access in order to authenticate the request
