@@ -126,6 +126,24 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
         })
 })
 
+app.delete('/v1/s3/:fileName', (req, res) => {
+    const fileName = req.params.fileName
+    const s3Path = fileName.substr(fileName.indexOf('edji.it') + 8)
+
+    if (!lib.validateRequest(req.headers['authorization'])) {
+        return res.status(401).send()
+    } else {
+        lib.deleteFromS3(s3Path)
+            .then((deletedUrl) => {
+                return res.status(200).send({ deleted_url: deletedUrl })
+            })
+            .catch((err) => {
+                console.error(err)
+                return res.status(500).send()
+            })
+    }
+})
+
 app.put('/v1/pdf', (req, res) => {
     // the process will crash if the server tries assuming application/json
     let contentType = req.headers['Content-Type'] || req.headers['content-type']

@@ -97,16 +97,20 @@ module.exports = {
         })
     },
     deleteFromS3: function(fileName) {
-    return new Promise((resolve, reject) => {
-        aws.s3.deleteObject({ Bucket: aws.S3_BUCKET, Key: fileName }, (err, obj) => {
-            if (err) {
-                console.log("AWS ERROR:", err)
-                reject(err)
-            } else {
-                console.log("should have successfully deleted this object")
-                resolve(fileName)
-            }
+        return new Promise((resolve, reject) => {
+            aws.s3.deleteObject({ Bucket: aws.S3_BUCKET, Key: fileName }, (err, obj) => {
+                if (err) {
+                    console.log("AWS ERROR:", err)
+                    reject(err)
+                } else {
+                    console.log("should have successfully deleted this object")
+                    resolve(fileName)
+                }
+            })
         })
-    })
-}
+    },
+    // this will validate tokens sent from the server - yeah it's a quick fix. We'll figure out something cooler l8r
+    validateRequest: function(token) {
+        return token == 'fwyv2u9wfkRefHwNEro&eQCmsXsq78)R'
+    }
 }
