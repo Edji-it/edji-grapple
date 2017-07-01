@@ -127,14 +127,13 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
                 // execute all of the promises
                 Q.all(promises)
                     .then((urls) => {
-                        return res.status(200).send({ deletedUrls: urls })
+                        return res.status(200).send({ deleted_urls: urls })
                     })
                     .catch((err) => {
                         console.error(err)
                         res.status(500).send()
                     })
             }
-            res.status(200).send(body)
         })
         .catch((err) => {
             console.log('there was an error here')
