@@ -85,20 +85,6 @@ app.get("/sign-s3", (req, res) => {
   })
 })
 
-let deleteFromS3 = function(fileName) {
-    return new Promise((resolve, reject) => {
-        aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
-            if (err) {
-                console.log("AWS ERROR:", err)
-                reject(err)
-            } else {
-                console.log("should have successfully deleted this object")
-                resolve(fileName)
-            }
-        })
-    })
-}
-
 // this route requests permissions from the optimus server to delete an object in s3. Optimus knows all, and will know if that is ok or not
 app.delete("/v1/s3/:type/:asset_id", (req, res) => {
     const type = req.params.type
@@ -120,7 +106,7 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
                     // get the path w/o the domain
                     let s3Path = url.substr(url.indexOf('edji.it') + 8)
                     // add the promise to an array that can be executed
-                    promises.push(deleteFromS3(s3Path))
+                    promises.push(lib.deleteFromS3(s3Path))
                 })
 
                 // execute all of the promises

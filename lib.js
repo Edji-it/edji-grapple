@@ -95,5 +95,18 @@ module.exports = {
                 else { resolve(awsPath) }
             })
         })
-    }
+    },
+    deleteFromS3: function(fileName) {
+    return new Promise((resolve, reject) => {
+        aws.s3.deleteObject({ Bucket: aws.S3_BUCKET, Key: fileName }, (err, obj) => {
+            if (err) {
+                console.log("AWS ERROR:", err)
+                reject(err)
+            } else {
+                console.log("should have successfully deleted this object")
+                resolve(fileName)
+            }
+        })
+    })
+}
 }
