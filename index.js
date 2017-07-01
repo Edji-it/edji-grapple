@@ -113,10 +113,10 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
     }
 
     rp(options)
-        .then((body) => { // { fileLocations: string[] }
-            if (body.fileLocations) {
+        .then((body) => { // { file_locations: string[] }
+            if (body.file_locations) {
                 let promises = []
-                body.fileLocations.forEach((url) => {
+                body.file_locations.forEach((url) => {
                     // get the path w/o the domain
                     let s3Path = url.substr(url.indexOf('edji.it') + 8)
                     // add the promise to an array that can be executed
