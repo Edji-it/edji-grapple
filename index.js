@@ -86,14 +86,16 @@ app.get("/sign-s3", (req, res) => {
 })
 
 let deleteFromS3 = function(fileName) {
-    aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
-        if (err) {
-            console.log("AWS ERROR:", err)
-            // return res.status(500).send()
-        } else {
-            console.log("should have successfully deleted this object")
-            // res.status(204).send()
-        }
+    return new Promise((resolve, reject) => {
+        aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+            if (err) {
+                console.log("AWS ERROR:", err)
+                reject(err)
+            } else {
+                console.log("should have successfully deleted this object")
+                resolve(fileName)
+            }
+        })
     })
 }
 
@@ -103,11 +105,6 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
     const assetId = req.params.asset_id
     const fileName = req.params.fileName
 
-    // console.log(req.headers)
-    // if (req.headers['Authorization']) {
-    //     console.log("it's capital")
-    // } else if (req.headers['uthorization'])
-
     let options = {
         method: 'DELETE',
         uri: [authDomain, "users", "assets", type, assetId].join("/"), // optimus endpoint for getting permissions to delete an asset,
@@ -116,26 +113,28 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
     }
 
     rp(options)
-        .then((body) => {
+        .then((body) => { // { fileLocations: string[] }
             console.log('Optimus has responded!', body)
             if (body.fileLocations) {
-                console.log("got file locations!")
+                let promises = []
                 body.fileLocations.forEach((url) => {
+                    // get the path w/o the domain
                     let s3Path = url.substr(url.indexOf('edji.it') + 8)
-                    // console.log(url.substr(url.indexOf('edji.it') + 8))
-                    deleteFromS3(s3Path)
+                    // add the promise to an array that can be executed
+                    promises.push(deleteFromS3(s3Path))
                 })
+
+                // execute all of the promises
+                Q.all(promises)
+                    .then((urls) => {
+                        return res.status(200).send({ deletedUrls: urls })
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        res.status(500).send()
+                    })
             }
             res.status(200).send(body)
-            // aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
-            //     if (err) {
-            //         console.log("AWS ERROR:", err)
-            //         return res.status(500).send()
-            //     } else {
-            //         console.log("should have successfully deleted this object")
-            //         res.status(204).send()
-            //     }
-            // })
         })
         .catch((err) => {
             console.log('there was an error here')
