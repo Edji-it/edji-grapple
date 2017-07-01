@@ -99,27 +99,27 @@ app.delete("/v1/s3/:type/:asset_id/:fileName", (req, res) => {
     let options = {
         method: 'DELETE',
         uri: [authDomain, "users", "assets", type, assetId].join("/"), // optimus endpoint for getting permissions to delete an asset,
-        headers: { Authorization: req.headers['authorization'] }
+        headers: { Authorization: req.headers['authorization'] } // have to pass this along to our new request
     }
 
     rp(options)
-        .then((body) => {
-            // there actually shouldn't be a body from this call - it returns a 204
-            console.log(body)
-            res.status(204).send(body)
+        .then((body) => { // there actually shouldn't be a body from this call - it returns a 204
+            console.log('Optimus has responded!')
+            aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+                if (err) {
+                    console.log("AWS ERROR:", err)
+                    return res.status(500).send()
+                } else {
+                    console.log("should have successfully deleted this object")
+                    res.status(204).send()
+                }
+            })
         })
         .catch((err) => {
             // console.error(err)
             console.log('there was an error here')
-            res.status(400).send({ error: err })
+            res.status(err.statusCode).send({ error: err.error })
         })
-
-    // aws.s3.getObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
-    //     if (err) { return res.status(500).send(err) }
-    //     else {
-    //         res.status(200).send()
-    //     }
-    // })
 })
 
 app.put('/v1/pdf', (req, res) => {
