@@ -85,8 +85,20 @@ app.get("/sign-s3", (req, res) => {
   })
 })
 
+let deleteFromS3 = function(fileName) {
+    aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+        if (err) {
+            console.log("AWS ERROR:", err)
+            // return res.status(500).send()
+        } else {
+            console.log("should have successfully deleted this object")
+            // res.status(204).send()
+        }
+    })
+}
+
 // this route requests permissions from the optimus server to delete an object in s3. Optimus knows all, and will know if that is ok or not
-app.delete("/v1/s3/:type/:asset_id/:fileName", (req, res) => {
+app.delete("/v1/s3/:type/:asset_id", (req, res) => {
     const type = req.params.type
     const assetId = req.params.asset_id
     const fileName = req.params.fileName
@@ -99,24 +111,33 @@ app.delete("/v1/s3/:type/:asset_id/:fileName", (req, res) => {
     let options = {
         method: 'DELETE',
         uri: [authDomain, "users", "assets", type, assetId].join("/"), // optimus endpoint for getting permissions to delete an asset,
-        headers: { Authorization: req.headers['authorization'] } // have to pass this along to our new request
+        headers: { Authorization: req.headers['authorization'] }, // have to pass this along to our new request,
+        json: true
     }
 
     rp(options)
-        .then((body) => { // there actually shouldn't be a body from this call - it returns a 204
-            console.log('Optimus has responded!')
-            aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
-                if (err) {
-                    console.log("AWS ERROR:", err)
-                    return res.status(500).send()
-                } else {
-                    console.log("should have successfully deleted this object")
-                    res.status(204).send()
-                }
-            })
+        .then((body) => {
+            console.log('Optimus has responded!', body)
+            if (body.fileLocations) {
+                console.log("got file locations!")
+                body.fileLocations.forEach((url) => {
+                    let s3Path = url.substr(url.indexOf('edji.it') + 8)
+                    // console.log(url.substr(url.indexOf('edji.it') + 8))
+                    deleteFromS3(s3Path)
+                })
+            }
+            res.status(200).send(body)
+            // aws.s3.deleteObject({ Bucket: S3_BUCKET, Key: fileName }, (err, obj) => {
+            //     if (err) {
+            //         console.log("AWS ERROR:", err)
+            //         return res.status(500).send()
+            //     } else {
+            //         console.log("should have successfully deleted this object")
+            //         res.status(204).send()
+            //     }
+            // })
         })
         .catch((err) => {
-            // console.error(err)
             console.log('there was an error here')
             res.status(err.statusCode).send({ error: err.error })
         })
