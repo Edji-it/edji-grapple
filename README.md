@@ -80,3 +80,9 @@ Route Parameters
 `type`: `string` -> The name of the asset type you want deleted. Currently accepted are audio, images and documents
 
 `asset_id`: `string` -> The id of the asset that Optimus needs to access in order to authenticate the request
+
+Response Body
+
+```javascript
+  deleted_urls: string[]
+```
