@@ -57,15 +57,9 @@ app.use(function (req, res, next) {
 })
 
 app.get("/sign-s3", (req, res) => {
-  const retainPath = (req.query['retain-path'] == true) // make sure the query parameter is converted to boolean value
+  // const s3 = new aws.S3() // aws.S3 automatically grabs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from the environment as credentials
   const fileExt = req.query['file-name'].substr(req.query['file-name'].lastIndexOf(".")).toLowerCase() // this just takes the file extension
-  const fileName
-  if (retainPath) {
-    fileName = req.query['file-path']
-  } else {
-    fileName = (req.query['file-path'] ? (req.query['file-path'] + "/") : "readings/") + uuid.v4() + fileExt // generate a unique name for the file
-  }
-  
+  const fileName = (req.query['file-path'] ? (req.query['file-path'] + "/") : "readings/") + uuid.v4() + fileExt // generate a unique name for the file
   const fileType = req.query['file-type']
   const s3Params = {
     Bucket: S3_BUCKET,
