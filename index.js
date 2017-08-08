@@ -59,7 +59,7 @@ app.use(function (req, res, next) {
 app.get("/sign-s3", (req, res) => {
   const retainPath = (req.query['retain-path'] == true) // make sure the query parameter is converted to boolean value
   const fileExt = req.query['file-name'].substr(req.query['file-name'].lastIndexOf(".")).toLowerCase() // this just takes the file extension
-  const fileName
+  let fileName
   if (retainPath) {
     fileName = req.query['file-path']
   } else {
