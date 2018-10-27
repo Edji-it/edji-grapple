@@ -49,8 +49,7 @@ app.get("/sign-s3", (req, res) => {
 
     aws.s3.getSignedUrl('putObject', s3Params, (err, data) => {
         if (err) {
-            console.error(err)
-            return res.status(500).send()
+            next(err)
         }
 
         let returnData = {
@@ -93,18 +92,16 @@ app.delete("/v1/s3/:type/:asset_id", (req, res) => {
                         return res.status(200).send({ deleted_urls: urls })
                     })
                     .catch((err) => {
-                        console.error(err)
-                        res.status(500).send()
+                        next(err)
                     })
             }
         })
         .catch((err) => {
-            console.error(err)
-            res.status(err.statusCode).send()
+            next(err)
         })
 })
 
-app.delete('/v1/s3/:fileName', (req, res) => {
+app.delete('/v1/s3/:fileName', (req, res, next) => {
     const fileName = req.params.fileName
     const s3Path = fileName.substr(fileName.indexOf('edji.it') + 8)
 
@@ -116,13 +113,12 @@ app.delete('/v1/s3/:fileName', (req, res) => {
                 return res.status(200).send({ deleted_url: deletedUrl })
             })
             .catch((err) => {
-                console.error(err)
-                return res.status(500).send()
+                next(err)
             })
     }
 })
 
-app.put('/v1/pdf', (req, res) => {
+app.put('/v1/pdf', (req, res, next) => {
     // the process will crash if the server tries assuming application/json
     let contentType = req.headers['Content-Type'] || req.headers['content-type']
     if (!contentType || contentType.toLowerCase() !== "application/pdf") {
@@ -130,8 +126,7 @@ app.put('/v1/pdf', (req, res) => {
     }
 
     if (!req.body) {
-        res.status(400).send()
-        return
+        return res.status(400).send()
     }
 
     let fileId = uuid.v4()
@@ -150,9 +145,6 @@ app.put('/v1/pdf', (req, res) => {
             res.status(202).send({ uuid: fileId })
         })
         .catch((err) => {
-            console.error(err)
-            res.status(500).send()
-
             let failedStatus = {
                 uuid: fileName,
                 converted: false,
@@ -160,6 +152,7 @@ app.put('/v1/pdf', (req, res) => {
                 updatedTime: Date.now()
             }
             lib.putToS3(statusLocation, failedStatus)
+            next(err)
         })
 
     lib.savePdf(pdfPath, req.body)
@@ -180,11 +173,7 @@ app.put('/v1/pdf', (req, res) => {
 
             return lib.putToS3(statusLocation, JSON.stringify(statusUpdate))
         })
-        .then((awsPath) => {
-            console.log("done converting pdf at " + awsPath)
-        })
         .catch((err) => {
-            console.error(err)
             let failedStatus = {
                 uuid: fileName,
                 converted: false,
@@ -192,6 +181,7 @@ app.put('/v1/pdf', (req, res) => {
                 updatedTime: Date.now()
             }
             lib.putToS3(statusLocation, failedStatus)
+            next(err)
         })
 })
 
