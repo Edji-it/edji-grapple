@@ -20,7 +20,10 @@ const S3_BUCKET = process.env.S3_BUCKET || "image-dev.edji.it"
 const authDomain = config.get("EDJI_API.OPTIMUS_URL")
 
 const Sentry = require('@sentry/node')
-Sentry.init({ dsn: 'https://e0f84ae516644fbbad1ee6de0254e17e@sentry.io/1310462' })
+Sentry.init({
+    dsn: 'https://e0f84ae516644fbbad1ee6de0254e17e@sentry.io/1310462',
+    environment: process.env.NODE_ENV
+})
 
 app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.raw({ limit: '10mb', type: 'application/pdf' }))
