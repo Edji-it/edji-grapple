@@ -35,7 +35,7 @@ module.exports = {
     // recursive function that repeats everything inside until it encounters an error
     convertPage: function(savePath, fileId, pageNum, filePaths, callback) {
         if (!filePaths) { let filePaths = [] } // this will be the returned array of AWS file paths
-        let fileName = `${fileId}-${pageNum}.png`
+        let fileName = `${fileId}-${pageNum}.jpg`
         let resultPath = `${savePath}/${fileName}`
         console.log("just about to convert a page")
         im.convert(['-density', '144', `${savePath}/${fileId}.pdf[${pageNum}]`, resultPath ], (err, stdout) => {
