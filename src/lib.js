@@ -38,7 +38,7 @@ module.exports = {
         let fileName = `${fileId}-${pageNum}.png`
         let resultPath = `${savePath}/${fileName}`
         console.log("just about to convert a page")
-        im.convert(['-density', '144', '-quality', '100', `${savePath}/${fileId}.pdf[${pageNum}]`, resultPath ], (err, stdout) => {
+        im.convert(['-density', '144', `${savePath}/${fileId}.pdf[${pageNum}]`, resultPath ], (err, stdout) => {
             console.log("actually converted the thing!")
 
             // when an error occurs, we assume that's because we hit the end of the file, and so we resolve with the created paths
